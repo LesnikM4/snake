@@ -14,7 +14,13 @@ def put_meat():
         put_meat()
 
 def pressed_key(key):
-    snake_direction = key
+    global snake_direction
+    global snake_direction_old
+    if not (snake_direction_old == "right" and key == "left" 
+    or snake_direction_old == "left" and key == "right"
+    or snake_direction_old == "up" and key == "down"
+    or snake_direction_old == "down" and key == "up"):
+        snake_direction = key
 
 add_hotkey("right", pressed_key, args=['right'])
 add_hotkey("left", pressed_key, args=['left'])
@@ -43,6 +49,7 @@ snake_len = 2
 
 put_meat()
 snake_direction = "right"
+snake_direction_old = "right"
 
 system('cls||clear')
 for i in field:
@@ -52,10 +59,10 @@ for i in field:
 print("Start     02")
 
 while play_on == "Process":
-    sleep(1)
+
+    sleep(0.5)
 
     system('cls||clear')
-    snake_direction = "right" # up or down, but no left
 
     if snake_direction == "right":
         next_top = [snake_top[0]+1,snake_top[1]+0]
@@ -65,22 +72,29 @@ while play_on == "Process":
         next_top = [snake_top[0]+0,snake_top[1]-1]
     elif snake_direction == "down":
         next_top = [snake_top[0]+0,snake_top[1]+1]
-    else:
-        print("WTF?")
+    snake_direction_old = snake_direction
 
     in_next_top = field[next_top[1]][next_top[0]]
-    if in_next_top == "#" or in_next_top == "%":
+    if snake_len >= 30:
+        play_on = "Win    "
+    elif in_next_top == "#":
         play_on = "Fail   "
-    elif in_next_top == ".":
+    elif in_next_top == "." or in_next_top == "%":
         snake.append(next_top)
         remove_tail = snake.pop(0)
 
-        field[next_top[1]][next_top[0]] = "@"
-        field[snake_top[1]][snake_top[0]] = "%"
         field[remove_tail[1]][remove_tail[0]] = "."
+        if field[next_top[1]][next_top[0]] == "%":
+            play_on = "Fail   "
 
-        snake_top = [next_top[0]+0,next_top[1]+0]
+        if play_on == "Process":
+            field[next_top[1]][next_top[0]] = "@"
+            field[snake_top[1]][snake_top[0]] = "%"
+
+            snake_top = [next_top[0]+0,next_top[1]+0]
     elif in_next_top == "*":
+        snake.append(next_top)
+
         field[next_top[1]][next_top[0]] = "@"
         field[snake_top[1]][snake_top[0]] = "%"
 
