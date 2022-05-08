@@ -41,6 +41,12 @@ def print_field(field, play_on, snake_len):
         print()
     print(play_on, "   ", f'{snake_len:02}', sep="")
 
+symbol_free = " "
+symbol_fence = "#"
+symbol_body = "%"
+symbol_top = "@"
+symbol_meat = "*"
+
 add_hotkey("right", pressed_key, args=['right'])
 add_hotkey("left", pressed_key, args=['left'])
 add_hotkey("up", pressed_key, args=['up'])
@@ -50,16 +56,16 @@ add_hotkey("space", pressed_key, args=['down'])
 play_on = "Process"
 
 field = [list("############"),
-         list("#..........#"),
-         list("#.%%@......#"),
-         list("#..........#"),
-         list("#..........#"),
-         list("#..........#"),
-         list("#..........#"),
-         list("#..........#"),
-         list("#..........#"),
-         list("#..........#"),
-         list("#..........#"),
+         list("#          #"),
+         list("# %%@      #"),
+         list("#          #"),
+         list("#          #"),
+         list("#          #"),
+         list("#          #"),
+         list("#          #"),
+         list("#          #"),
+         list("#          #"),
+         list("#          #"),
          list("############")]
 
 snake_top = [4,2]
@@ -82,26 +88,26 @@ while play_on == "Process":
     in_next_top = field[next_top[1]][next_top[0]]
     if snake_len >= 30:
         play_on = "Win    "
-    elif in_next_top == "#":
+    elif in_next_top == symbol_fence:
         play_on = "Fail   "
-    elif in_next_top == "." or in_next_top == "%":
+    elif in_next_top == symbol_free or in_next_top == symbol_body:
         snake.append(next_top)
         remove_tail = snake.pop(0)
 
-        field[remove_tail[1]][remove_tail[0]] = "."
-        if field[next_top[1]][next_top[0]] == "%":
+        field[remove_tail[1]][remove_tail[0]] = symbol_free
+        if field[next_top[1]][next_top[0]] == symbol_body:
             play_on = "Fail   "
 
         if play_on == "Process":
-            field[next_top[1]][next_top[0]] = "@"
-            field[snake_top[1]][snake_top[0]] = "%"
+            field[next_top[1]][next_top[0]] = symbol_top
+            field[snake_top[1]][snake_top[0]] = symbol_body
 
             snake_top = [next_top[0]+0,next_top[1]+0]
-    elif in_next_top == "*":
+    elif in_next_top == symbol_meat:
         snake.append(next_top)
 
-        field[next_top[1]][next_top[0]] = "@"
-        field[snake_top[1]][snake_top[0]] = "%"
+        field[next_top[1]][next_top[0]] = symbol_top
+        field[snake_top[1]][snake_top[0]] = symbol_body
 
         put_meat(field)
         snake_top = [next_top[0]+0,next_top[1]+0]
