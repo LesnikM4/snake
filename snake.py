@@ -5,14 +5,6 @@ from time import sleep
 from os import system
 from random import randint
 
-def put_meat():
-    a = randint(1,10)
-    b = randint(1,10)
-    if field[a][b] == ".":
-        field[a][b] = "*"
-    else:
-        put_meat()
-
 def pressed_key(key):
     global snake_direction
     global snake_direction_old
@@ -21,6 +13,33 @@ def pressed_key(key):
     or snake_direction_old == "up" and key == "down"
     or snake_direction_old == "down" and key == "up"):
         snake_direction = key
+
+def put_meat(field):
+    a = randint(1,10)
+    b = randint(1,10)
+    if field[a][b] == " ":
+        field[a][b] = "*"
+    else:
+        put_meat(field)
+
+def get_next_top(snake_direction, snake_top):
+    if snake_direction == "right":
+        next_top = [snake_top[0]+1,snake_top[1]+0]
+    elif snake_direction == "left":
+        next_top = [snake_top[0]-1,snake_top[1]+0]
+    elif snake_direction == "up":
+        next_top = [snake_top[0]+0,snake_top[1]-1]
+    elif snake_direction == "down":
+        next_top = [snake_top[0]+0,snake_top[1]+1]
+    return next_top
+
+def print_field(field, play_on, snake_len):
+    system('cls||clear')
+    for i in field:
+        for ii in i:
+            print(ii, end='')
+        print()
+    print(play_on, "   ", f'{snake_len:02}', sep="")
 
 add_hotkey("right", pressed_key, args=['right'])
 add_hotkey("left", pressed_key, args=['left'])
@@ -47,31 +66,17 @@ snake_top = [4,2]
 snake = [[2,2],[3,2],[4,2]]
 snake_len = 2
 
-put_meat()
+put_meat(field)
 snake_direction = "right"
 snake_direction_old = "right"
 
-system('cls||clear')
-for i in field:
-    for ii in i:
-        print(ii, end='')
-    print("")
-print("Start     02")
+print_field(field, play_on, snake_len)
 
 while play_on == "Process":
 
     sleep(0.5)
 
-    system('cls||clear')
-
-    if snake_direction == "right":
-        next_top = [snake_top[0]+1,snake_top[1]+0]
-    elif snake_direction == "left":
-        next_top = [snake_top[0]-1,snake_top[1]+0]
-    elif snake_direction == "up":
-        next_top = [snake_top[0]+0,snake_top[1]-1]
-    elif snake_direction == "down":
-        next_top = [snake_top[0]+0,snake_top[1]+1]
+    next_top = get_next_top(snake_direction, snake_top)
     snake_direction_old = snake_direction
 
     in_next_top = field[next_top[1]][next_top[0]]
@@ -98,15 +103,12 @@ while play_on == "Process":
         field[next_top[1]][next_top[0]] = "@"
         field[snake_top[1]][snake_top[0]] = "%"
 
-        put_meat()
+        put_meat(field)
         snake_top = [next_top[0]+0,next_top[1]+0]
         snake_len += 1
     else:
         print("WTF?")
 
-    for i in field:
-        for ii in i:
-            print(ii, end='')
-        print()
-    print(play_on, "   ", f'{snake_len:02}', sep="")
+    print_field(field, play_on, snake_len)
 
+input("Press to close window")
