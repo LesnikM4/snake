@@ -19,12 +19,13 @@ add_hotkey("up", pressed_key, args=['up'])
 add_hotkey("down", pressed_key, args=['down'])
 
 def put_meat(field):
-    a = randint(1,field_width)
-    b = randint(1,field_height)
-    if field[a][b] == symbol_free:
-        field[a][b] = symbol_meat
+    meat_a = randint(1,field_width)
+    meat_b = randint(1,field_height)
+    if field[meat_a][meat_b] == symbol_free:
+        meat = [meat_a, meat_b]
     else:
-        put_meat(field)
+        meat = put_meat(field)
+    return meat
 
 def get_next_top(snake_direction, snake_top):
     if snake_direction == "right":
@@ -54,7 +55,26 @@ def check_play_on(next_top):
     return play_on
 
 
-def print_field(field, play_on, snake_len):
+def print_field():
+    global field
+    field = []
+    for line_number in range(field_height + 2):
+        if line_number == 0 or line_number == field_height + 1 :
+            line = symbol_fence * (field_width + 2)
+        else:
+            line = symbol_fence + field_width*symbol_free + symbol_fence
+        field.append(list(line))
+    for snake_path in snake:
+        snake_path_x, snake_path_y = snake_path
+        field[snake_path_y][snake_path_x] = symbol_body
+    snake_top_x, snake_top_y = snake_path
+    field[snake_top_y][snake_top_x] = symbol_top
+
+    if meat != 0:
+        meat_x, meat_y = meat
+        field[meat_y][meat_x] = symbol_meat
+
+
     system('cls||clear')
     for i in field:
         for ii in i:
@@ -72,27 +92,25 @@ symbol_meat = "*"
 field_width = 10
 field_height = 10
 
-# INIT
-field = []
-for line_number in range(field_height + 2):
-    if line_number == 0 or line_number == field_height + 1 :
-        line = symbol_fence * (field_width + 2)
-    else:
-        line = symbol_fence + field_width*symbol_free + symbol_fence
-    field.append(list(line))
+speed = 0.5
 
-put_meat(field)
+# INIT
 play_on = "Process"
-snake_top = [4,2]
 snake = [[2,2],[3,2],[4,2]]
+snake_top = [4,2]
 snake_len = 2
 snake_direction = "right"
 snake_direction_old = "right"
+meat = 0
+field = []
+
+print_field()
+meat = put_meat(field)
 
 # GAME
-print_field(field, play_on, snake_len)
+print_field()
 while play_on == "Process":
-    sleep(0.5)
+    sleep(speed)
     next_top = get_next_top(snake_direction, snake_top)
     snake_direction_old = snake_direction
     play_on = check_play_on(next_top)
@@ -101,21 +119,12 @@ while play_on == "Process":
     if play_on == "Process" and in_next_top == symbol_free or in_next_top == symbol_body:
         snake.append(next_top)
         remove_tail = snake.pop(0)
-
-        field[remove_tail[1]][remove_tail[0]] = symbol_free
-        field[next_top[1]][next_top[0]] = symbol_top
-        field[snake_top[1]][snake_top[0]] = symbol_body
-
         snake_top = [next_top[0]+0,next_top[1]+0]
     elif play_on == "Process" and in_next_top == symbol_meat:
         snake.append(next_top)
-
-        field[next_top[1]][next_top[0]] = symbol_top
-        field[snake_top[1]][snake_top[0]] = symbol_body
-
-        put_meat(field)
+        meat = put_meat(field)
         snake_top = [next_top[0]+0,next_top[1]+0]
         snake_len += 1
-    print_field(field, play_on, snake_len)
+    print_field()
 
 input("Press to close window")
