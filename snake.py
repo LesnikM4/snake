@@ -19,10 +19,10 @@ add_hotkey("up", pressed_key, args=['up'])
 add_hotkey("down", pressed_key, args=['down'])
 
 def put_meat(field):
-    a = randint(1,10)
-    b = randint(1,10)
-    if field[a][b] == " ":
-        field[a][b] = "*"
+    a = randint(1,field_width)
+    b = randint(1,field_height)
+    if field[a][b] == symbol_free:
+        field[a][b] = symbol_meat
     else:
         put_meat(field)
 
@@ -65,26 +65,22 @@ def print_field(field, play_on, snake_len):
 # SETTINGS
 symbol_free = " "
 symbol_fence = "#"
-symbol_body = "%"
+symbol_body = "0"
 symbol_top = "@"
 symbol_meat = "*"
 
 field_width = 10
-field_height= 10
+field_height = 10
 
 # INIT
-field = [list("############"),
-         list("#          #"),
-         list("# %%@      #"),
-         list("#          #"),
-         list("#          #"),
-         list("#          #"),
-         list("#          #"),
-         list("#          #"),
-         list("#          #"),
-         list("#          #"),
-         list("#          #"),
-         list("############")]
+field = []
+for line_number in range(field_height + 2):
+    if line_number == 0 or line_number == field_height + 1 :
+        line = symbol_fence * (field_width + 2)
+    else:
+        line = symbol_fence + field_width*symbol_free + symbol_fence
+    field.append(list(line))
+
 put_meat(field)
 play_on = "Process"
 snake_top = [4,2]
@@ -101,7 +97,7 @@ while play_on == "Process":
     snake_direction_old = snake_direction
     play_on = check_play_on(next_top)
     in_next_top = field[next_top[1]][next_top[0]]
-    
+
     if play_on == "Process" and in_next_top == symbol_free or in_next_top == symbol_body:
         snake.append(next_top)
         remove_tail = snake.pop(0)
