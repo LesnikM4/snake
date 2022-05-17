@@ -40,7 +40,7 @@ def get_next_top(snake_direction, snake_top):
 
 def check_play_on(next_top):
     in_next_top = field[next_top[1]][next_top[0]]
-    if snake_len >= 30:
+    if len(snake) >= 30:
         play_on = "Win    "
     elif in_next_top == symbol_fence:
         play_on = "Fail   "
@@ -74,7 +74,7 @@ def print_field():
         meat_x, meat_y = meat
         field[meat_y][meat_x] = symbol_meat
 
-
+    snake_len = len(snake)
     system('cls||clear')
     for i in field:
         for ii in i:
@@ -91,14 +91,12 @@ symbol_meat = "*"
 
 field_width = 10
 field_height = 10
-
 speed = 0.5
 
 # INIT
 play_on = "Process"
 snake = [[2,2],[3,2],[4,2]]
 snake_top = [4,2]
-snake_len = 2
 snake_direction = "right"
 snake_direction_old = "right"
 meat = 0
@@ -124,7 +122,6 @@ while play_on == "Process":
         snake.append(next_top)
         meat = put_meat(field)
         snake_top = [next_top[0]+0,next_top[1]+0]
-        snake_len += 1
     print_field()
 
 input("Press to close window")
