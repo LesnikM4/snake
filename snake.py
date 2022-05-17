@@ -41,13 +41,13 @@ def get_next_top(snake_direction, snake_top):
 def check_play_on(next_top):
     in_next_top = field[next_top[1]][next_top[0]]
     if len(snake) >= 30:
-        play_on = "Win    "
+        play_on = "Win"
     elif in_next_top == symbol_fence:
-        play_on = "Fail   "
+        play_on = "Fail"
     elif in_next_top == symbol_body:
         remove_tail = snake[0]
         if next_top != remove_tail:
-            play_on = "Fail   "
+            play_on = "Fail"
         else:
             play_on = "Process"
     else:
@@ -80,7 +80,7 @@ def print_field():
         for ii in i:
             print(ii, end='')
         print()
-    print(play_on, "   ", f'{snake_len:02}', sep="")
+    print(play_on.ljust(field_width), f'{snake_len:02}', sep="")
 
 # SETTINGS
 symbol_free = " "
