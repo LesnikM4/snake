@@ -54,8 +54,7 @@ def check_play_on(next_top):
         play_on = "Process"
     return play_on
 
-
-def print_field():
+def build_field():
     global field
     field = []
     for line_number in range(field_height + 2):
@@ -64,16 +63,22 @@ def print_field():
         else:
             line = symbol_fence + field_width*symbol_free + symbol_fence
         field.append(list(line))
+
+def build_snake():
+    global field
     for snake_path in snake:
         snake_path_x, snake_path_y = snake_path
         field[snake_path_y][snake_path_x] = symbol_body
     snake_top_x, snake_top_y = snake_path
     field[snake_top_y][snake_top_x] = symbol_top
 
+def build_meat():
+    global field
     if meat != 0:
         meat_x, meat_y = meat
         field[meat_y][meat_x] = symbol_meat
 
+def print_built():
     snake_len = len(snake)
     system('cls||clear')
     for i in field:
@@ -81,6 +86,12 @@ def print_field():
             print(ii, end='')
         print()
     print(play_on.ljust(field_width), f'{snake_len:02}', sep="")
+
+def print_field():
+    build_field()
+    build_snake()
+    build_meat()
+    print_built()
 
 # SETTINGS
 symbol_free = " "
